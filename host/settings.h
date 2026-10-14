@@ -26,9 +26,11 @@ enum {
     SET_UPDATE_CHECK, /* 0 / 1: PR.30 ask GitHub for a newer release at start */
     SET_SMOOTH,       /* 0 / 1: PR.34 smooth frames (F9), on by default */
     SET_SELECT_HOLD,  /* 0 / 1: PR.38 Select held 1 s opens F1 (issue #5), on by default */
+    SET_LANGUAGE,     /* SET_LANGUAGE_EN / ES, used at next start */
     SET_COUNT
 };
 enum { SET_RENDERER_GPU, SET_RENDERER_SOFT };
+enum { SET_LANGUAGE_EN, SET_LANGUAGE_ES };
 enum { SET_WINDOW_WINDOWED, SET_WINDOW_BORDERLESS, SET_WINDOW_EXCLUSIVE };
 
 #define SET_KEY_SLOTS 2   /* keyboard keys per pad button */

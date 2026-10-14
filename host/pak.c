@@ -6,6 +6,7 @@
 #include "host/host.h"
 #include "host/host_sdl.h"
 #include "host/sha256.h"
+#include "host/language.h"
 
 /* dw2.pak: the game's disc files, built from the player's own disc image on the first start
  * (host/pakbuild.c) or by tools/dw2pack.py (format: doc/PACK_FORMAT.md). Opened and checked once
@@ -267,6 +268,7 @@ static int open_pak(const char *path, int hash_data) {
 #endif
     printf("[pak] %s: %d files, %.1f MB, all match the manifest (%s in %.2f s)\n", path, PAK_FILES, total / 1e6,
            hash_data ? "checked" : "index checked, data read back by the build", (SDL_GetTicksNS() - t0) / 1e9);
+    Host_LanguageInit(manifest, exe_sha);
     return 0;
 }
 
@@ -377,13 +379,19 @@ int Host_PakSector(int lba, unsigned char *body) {
     int id = file_at(lba);
     const PakFile *f;
     Uint64 at;
+    size_t translated_bytes;
+    const Uint8 *translated_data;
 
     memset(body, 0, 2336);
     if (id < 0) {
         return -1;
     }
     f = &files[id];
-    if (f->format == FORMAT_RAW) {
+    translated_data = Host_LanguageFile(id, &translated_bytes);
+    if (translated_data != NULL && f->format == FORMAT_DATA && translated_bytes == f->size) {
+        memcpy(body, form1_subheader, 8);
+        memcpy(body + 8, translated_data + (size_t)(lba - f->lba) * 2048, 2048);
+    } else if (f->format == FORMAT_RAW) {
         at = f->offset + (Uint64)(lba - f->lba) * 2336;
         SDL_SeekIO(pak, (Sint64)at, SDL_IO_SEEK_SET);
         SDL_ReadIO(pak, body, 2336);
@@ -404,12 +412,23 @@ void *Host_PakReadFile(int id, int *size) {
     SDL_IOStream *io;
     const PakFile *f;
     void *buf;
+    size_t translated_bytes;
+    const Uint8 *translated_data;
 
     *size = 0;
     if (pak_path[0] == 0 || id < 0 || id >= PAK_FILES || files[id].format != FORMAT_DATA) {
         return NULL;
     }
     f = &files[id];
+    translated_data = Host_LanguageFile(id, &translated_bytes);
+    if (translated_data != NULL && translated_bytes == f->size) {
+        buf = malloc(translated_bytes + 1);
+        if (buf == NULL) return NULL;
+        memcpy(buf, translated_data, translated_bytes);
+        ((Uint8 *)buf)[translated_bytes] = 0xFF;
+        *size = (int)translated_bytes;
+        return buf;
+    }
     io = SDL_IOFromFile(pak_path, "rb");
     if (io == NULL) {
         return NULL;

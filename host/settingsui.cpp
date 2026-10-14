@@ -10,6 +10,7 @@
 #include "imgui.h"
 
 #include "host/settings.h"
+#include "host/language.h"
 #include "host/update.h"
 #include "host/ui.h"
 
@@ -322,6 +323,29 @@ void open_releases(void);
 
 /* PR.28: speed-up multiplier; F3 switches the speed-up on and off in play */
 void game_tab(void) {
+    const char *const language_names[] = { "English", "Espa\xC3\xB1ol" };
+    int language = Settings_Get(SET_LANGUAGE);
+    ImGui::SeparatorText("Idioma / Language");
+    if (ImGui::BeginCombo("Idioma del juego", language_names[language])) {
+        for (int i = SET_LANGUAGE_EN; i <= SET_LANGUAGE_ES; i++) {
+            ImGui::BeginDisabled(i == SET_LANGUAGE_ES && !Host_LanguageAvailable());
+            if (ImGui::Selectable(language_names[i], language == i)) {
+                Settings_Set(SET_LANGUAGE, i);
+                language = i;
+            }
+            ImGui::EndDisabled();
+        }
+        ImGui::EndCombo();
+    }
+    if (language != Host_LanguageActive()) {
+        ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.35f, 1.0f), "%s",
+                           language == SET_LANGUAGE_ES ? "Reinicia el juego para aplicar el idioma." : "Restart to apply the language.");
+    }
+    if (!Host_LanguageAvailable()) {
+        ImGui::TextWrapped("Espa\xC3\xB1ol no disponible: %s", Host_LanguageError());
+    } else if (language == SET_LANGUAGE_ES) {
+        ImGui::TextDisabled("Traducci\xC3\xB3n: Alemito");
+    }
     static const int values[] = { 2, 3, 4, 5, 6, 8, 0 };
     static const char *const names[] = { "2x", "3x", "4x", "5x", "6x", "8x", "No limit" };
     int cur = Settings_Get(SET_SPEED);
