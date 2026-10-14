@@ -38,3 +38,5 @@ asm/USA/*/rodata/
 # dw2.pak: built from the player's own disc image (tools/dw2pack.py), never committed.
 *.pak
 *.pak.tmp
+*.langpak
+*.langpak.tmp

@@ -190,6 +190,23 @@ def main():
     for flag, n in by_flag.most_common(12):
         print("  %6d %s" % (n, flag))
 
+    language = os.path.join(ROOT, "build", "languages", "es.langpak")
+    if os.path.exists(language):
+        import dw2lang
+        base, expected = dw2lang.expectations()
+        try:
+            with open(language, "rb") as stream:
+                dw2lang.validate(stream.read(), base, expected)
+        except (OSError, ValueError) as error:
+            sys.exit("BUILD FAILED: optional Spanish package: %s" % error)
+        destinations = [build]
+        if WINDOWS and args.arch == "x64" and args.release:
+            destinations.append(os.path.join(ROOT, "build", "play"))
+        for destination in destinations:
+            folder = os.path.join(destination, "languages")
+            os.makedirs(folder, exist_ok=True)
+            shutil.copy2(language, os.path.join(folder, "es.langpak"))
+
     if WINDOWS and args.arch == "x64" and args.release:
         update_play(build)
 

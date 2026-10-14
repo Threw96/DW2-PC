@@ -346,3 +346,10 @@ belong to their owners. No game data is in this repository or its downloads; the
   <br>
   <sub>Powered by <a href="https://nyen.cc/"><b>NYEN</b></a></sub>
 </p>
+
+## Optional Language Support
+
+The local contribution adds an English/Spanish selector in F1 > Game.
+Spanish requires a separately generated pack from the supported user-supplied
+translation; no translated assets are included. See [Languages](doc/LANGUAGES.md)
+for generation, installation, credits, permission status and tests.
