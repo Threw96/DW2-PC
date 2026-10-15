@@ -8,9 +8,11 @@ and still passes its original manifest checks.
 Spanish resources come from the user-supplied Alemito translation, not from
 a new translation by this contribution's author. This repository contains
 only code, sizes and hashes, never ROMs or translated resource bodies.
-Permission to redistribute the translated assets has been requested and is
-pending; this contribution does not grant such permission. No downloadable
-translation pack is provided here.
+Alemito agreed to adapting his translation for this PC port in a reply supplied
+by the contributor on 2026-10-15, and offered dialogue files to help with the
+integration. Credit for the translation remains with Alemito. This approval
+is not presented as a general license for the game data. No downloadable
+translation pack is provided in this code-only contribution.
 
 ## Generate Locally
 
