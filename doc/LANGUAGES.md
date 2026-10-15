@@ -14,6 +14,9 @@ integration. Credit for the translation remains with Alemito. This approval
 is not presented as a general license for the game data. No downloadable
 translation pack is provided in this code-only contribution.
 
+Approval reference supplied by the contributor:
+[Alemito's reply](https://www.reddit.com/r/DigimonWorld/comments/1vid3rf/comment/pgw4e13/).
+
 ## Generate Locally
 
 Requires Python 3 and the supported translated USA raw 2352-byte-sector image.
